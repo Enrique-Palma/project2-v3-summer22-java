@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0cad208e-dff7-4fad-89a3-dfa742f0f430" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/mysql_connector_java.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project2-v3-summer22-java.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DisplayQueryResults.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ResultSetTableModel.java" afterDir="false" />
+    <list default="true" id="0cad208e-dff7-4fad-89a3-dfa742f0f430" name="Changes" comment="1.0.1 beta">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/root.properties" beforeDir="false" afterPath="$PROJECT_DIR$/root.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DisplayQueryResults.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DisplayQueryResults.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +45,11 @@
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\project2-v3-summer22-java" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="DisplayQueryResults" />
@@ -69,6 +68,21 @@
       <option name="presentableId" value="Default" />
       <updated>1655741712828</updated>
     </task>
+    <task id="LOCAL-00001" summary="1.0.1 beta">
+      <created>1655781490379</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1655781490379</updated>
+    </task>
+    <task id="LOCAL-00002" summary="1.0.1 beta">
+      <created>1655781522289</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1655781522289</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -81,5 +95,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1.0.1 beta" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.0.1 beta" />
   </component>
 </project>

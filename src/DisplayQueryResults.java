@@ -1,3 +1,11 @@
+/*
+Name: Enrique Palma
+Course: CNT 4714 Summer 2022
+Assignment title: Project 2 – A Two-tier Client-Server Application
+Date: July 4, 2022
+Class: DisplayQueryResults
+*/
+
 // Display the results of queries against the bikes table in the bikedb database.
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,23 +14,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.Box;
 import javax.swing.*;
-
-//import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.*;
+import java.util.Properties;
 
-public class DisplayQueryResults extends JFrame
-{
+public class DisplayQueryResults extends JFrame {
+
     private ResultSetTableModel tableModel;
     private JTextArea queryArea;
     private JComboBox<String> driverComboBox;
@@ -34,98 +41,82 @@ public class DisplayQueryResults extends JFrame
     private Connection connection;
 
     // create ResultSetTableModel and GUI
-    public DisplayQueryResults()
-    {
-        super( "Displaying Query Results" );
+    public DisplayQueryResults() {
+
+        super("SQL Client App (CNT 4714 - Project 2)");
+        String[] PropertiesItems = {"root.properties", "client.properties"};
 
         dataSource = new MysqlDataSource();
         connection = null;
-        tableModel = new ResultSetTableModel( );
+        tableModel = new ResultSetTableModel();
 
-        JLabel driverLabel = new JLabel("JDBC Driver", SwingConstants.RIGHT);
-        driverLabel.setOpaque(true);
-        driverLabel.setPreferredSize(new Dimension(84,30));
-        driverLabel.setBackground(Color.GRAY);
-        driverComboBox = new JComboBox(new String[]{"root.properties" , "client.properties"});
-        driverComboBox.setMinimumSize(new Dimension(200, 30));
-        driverComboBox.setPreferredSize(new Dimension(200, 30));
-
-        /*JLabel schemaLabel = new JLabel("Database URL", SwingConstants.RIGHT);
+        JLabel schemaLabel = new JLabel("Properties File", SwingConstants.RIGHT);
         schemaLabel.setOpaque(true);
-        schemaLabel.setPreferredSize(new Dimension(84,30));
-        schemaLabel.setBackground(Color.GRAY);
+        schemaLabel.setPreferredSize(new Dimension(84, 30));
+        schemaLabel.setBackground(Color.lightGray);
+        //schemaComboBox = new JComboBox<String>(new String[] { "root.properties", "client.properties" ,"test.properties"});
+        schemaComboBox = new JComboBox(PropertiesItems);
         schemaComboBox.setMinimumSize(new Dimension(200, 30));
-        schemaComboBox.setPreferredSize(new Dimension(200, 30));*/
-        schemaComboBox = new JComboBox(new String[]{"jdbc:mysql://127.0.0.1:3306/project2"});
+        schemaComboBox.setPreferredSize(new Dimension(200, 30));
 
-
-        JLabel usernameLabel = new JLabel("Username", SwingConstants.RIGHT);
+        JLabel usernameLabel = new JLabel("Username", SwingConstants.CENTER);
         usernameLabel.setOpaque(true);
-        usernameLabel.setPreferredSize(new Dimension(84,30));
-        usernameLabel.setBackground(Color.GRAY);
+        usernameLabel.setPreferredSize(new Dimension(84, 30));
+        usernameLabel.setBackground(Color.lightGray);
         usernameField = new JTextField();
 
-        JLabel passwordLabel = new JLabel("Password", SwingConstants.RIGHT);
+        JLabel passwordLabel = new JLabel("Password", SwingConstants.CENTER);
         passwordLabel.setOpaque(true);
-        passwordLabel.setPreferredSize(new Dimension(84,30));
-        passwordLabel.setBackground(Color.GRAY);
+        passwordLabel.setPreferredSize(new Dimension(84, 30));
+        passwordLabel.setBackground(Color.lightGray);
         passwordField = new JPasswordField();
 
-        queryArea = new JTextArea( 3, 100 );
-        queryArea.setWrapStyleWord( true );
-        queryArea.setLineWrap( true );
+        queryArea = new JTextArea(3, 100);
+        queryArea.setWrapStyleWord(true);
+        queryArea.setLineWrap(true);
 
         // set up JButton for submitting queries
-        JButton submitButton = new JButton( "Execute SQL Command" );
-        submitButton.setBackground(Color.GREEN);
-        submitButton.setForeground(Color.BLACK);
+        JButton submitButton = new JButton("Execute SQL Command");
+        submitButton.setBackground(Color.black);
+        submitButton.setForeground(Color.white);
 
         JButton connectButton = new JButton("Connect To Database");
         connectButton.setBackground(Color.BLUE);
         connectButton.setForeground(Color.YELLOW);
 
         JButton clearSqlButton = new JButton("Clear SQL Command");
-        clearSqlButton.setBackground(Color.WHITE);
-        clearSqlButton.setForeground(Color.RED);
+        clearSqlButton.setBackground(Color.red);
+        clearSqlButton.setForeground(Color.white);
 
         JButton clearResultsButton = new JButton("Clear Result Window");
-        clearResultsButton.setBackground(Color.YELLOW);
-        clearResultsButton.setForeground(Color.BLACK);
+        clearResultsButton.setBackground(Color.red);
+        clearResultsButton.setForeground(Color.white);
 
         JLabel label1 = new JLabel("Enter Database Information", SwingConstants.LEFT);
-        label1.setForeground(Color.BLUE);
+        label1.setForeground(Color.black);
 
-        JLabel label2 = new JLabel("Enter An SQL Command", SwingConstants.LEFT);
-        label2.setForeground(Color.BLUE);
+        JLabel label2 = new JLabel("Enter a SQL Command", SwingConstants.CENTER);
+        label2.setForeground(Color.black);
 
         JLabel label3 = new JLabel("SQL Execution Result Window", SwingConstants.LEFT);
-        label3.setForeground(Color.BLUE);
+        label3.setForeground(Color.black);
 
         JLabel connectionLabel = new JLabel("No connection now");
         connectionLabel.setOpaque(true);
-        connectionLabel.setBackground(Color.BLACK);
-        connectionLabel.setForeground(Color.RED);
-        connectionLabel.setPreferredSize(new Dimension(200, 40));
-
-        // Layout boxes.
-        Box driverBox = Box.createHorizontalBox();
-        driverBox.add(driverLabel);
-        driverBox.add(Box.createHorizontalStrut(5));
-        driverBox.add(driverComboBox);
+        connectionLabel.setBackground(Color.blue);
+        connectionLabel.setForeground(Color.white);
+        connectionLabel.setPreferredSize(new Dimension(400, 40));
 
         Box schemaBox = Box.createHorizontalBox();
-        //schemaBox.add(schemaLabel);
-        driverBox.add(Box.createHorizontalStrut(5));
-        //schemaBox.add(schemaComboBox);
+        schemaBox.add(schemaLabel);
+        schemaBox.add(schemaComboBox);
 
         Box usernameBox = Box.createHorizontalBox();
         usernameBox.add(usernameLabel);
-        driverBox.add(Box.createHorizontalStrut(5));
         usernameBox.add(usernameField);
 
         Box passwordBox = Box.createHorizontalBox();
         passwordBox.add(passwordLabel);
-        driverBox.add(Box.createHorizontalStrut(5));
         passwordBox.add(passwordField);
 
         Box dbInfoLabelBox = Box.createHorizontalBox();
@@ -135,7 +126,6 @@ public class DisplayQueryResults extends JFrame
         Box dbInfoBox = Box.createVerticalBox();
         dbInfoBox.add(dbInfoLabelBox);
         dbInfoBox.add(Box.createVerticalStrut(8));
-        dbInfoBox.add(driverBox);
         dbInfoBox.add(Box.createVerticalStrut(8));
         dbInfoBox.add(schemaBox);
         dbInfoBox.add(Box.createVerticalStrut(8));
@@ -175,18 +165,18 @@ public class DisplayQueryResults extends JFrame
 
         Box northBox = Box.createVerticalBox();
         northBox.add(Box.createVerticalStrut(10));
-        northBox.add( dbInfoAndSQLBox );
+        northBox.add(dbInfoAndSQLBox);
         northBox.add(Box.createVerticalStrut(10));
-        northBox.add( actionBox );
+        northBox.add(actionBox);
         northBox.add(Box.createVerticalStrut(10));
-        northBox.add( resultsLabelBox );
+        northBox.add(resultsLabelBox);
         northBox.add(Box.createVerticalStrut(10));
 
         // create JTable delegate for tableModel
-        JTable resultTable = new JTable( tableModel );
-        resultTable.setMinimumSize(new Dimension(500,400));
-        resultTable.setPreferredSize(new Dimension(500,400));
-        resultTable.setMaximumSize(new Dimension(500,400));
+        JTable resultTable = new JTable(tableModel);
+        resultTable.setMinimumSize(new Dimension(500, 400));
+        resultTable.setPreferredSize(new Dimension(500, 400));
+        resultTable.setMaximumSize(new Dimension(500, 400));
 
         Box resultsBox = Box.createHorizontalBox();
         resultsBox.add(Box.createHorizontalStrut(10));
@@ -198,104 +188,115 @@ public class DisplayQueryResults extends JFrame
         southBox.add(clearResultsButton);
         southBox.add(Box.createGlue());
 
-        // place GUI components on content panel
-        add( northBox, BorderLayout.NORTH );
-        add( resultsBox, BorderLayout.CENTER );
-        add( southBox, BorderLayout.SOUTH);
+        // place GUI components on content pane
+        add(northBox, BorderLayout.NORTH);
+        add(resultsBox, BorderLayout.CENTER);
+        add(southBox, BorderLayout.SOUTH);
 
         // create event listener for submitButton
-        submitButton.addActionListener(new ActionListener()
-                {
+        submitButton.addActionListener(
+
+                new ActionListener() {
                     // pass query to table model
-                    public void actionPerformed( ActionEvent event )
-                    {
+                    public void actionPerformed(ActionEvent event) {
                         // perform a new query
-                        try
-                        {
+                        try {
                             String sql = queryArea.getText().trim();
-                            tableModel.setSQL( sql );
+                            tableModel.setSQL(sql);
                         } // end try
-                        catch ( SQLException sqlException )
-                        {
-                            JOptionPane.showMessageDialog( null, sqlException.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE );
+                        catch (SQLException sqlException) {
+                            JOptionPane.showMessageDialog(null, sqlException.getMessage(), "Database error",
+                                    JOptionPane.ERROR_MESSAGE);
                         } // end catch
                     } // end actionPerformed
-                }  // end ActionListener inner class
+                } // end ActionListener inner class
         ); // end call to addActionListener
 
         // create event listener for connectButton
-        connectButton.addActionListener(new ActionListener()
-                {
-                    public void actionPerformed( ActionEvent event )
-                    {
-                        // connect to the database
-                        try
-                        {
-                            dataSource.setUser(usernameField.getText());
-                            dataSource.setPassword(passwordField.getText());
-                            connection = dataSource.getConnection();
-                            connectionLabel.setText((String)(schemaComboBox.getSelectedItem()));
-                            tableModel.setConnection(connection);
+        connectButton.addActionListener(
+
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        Properties properties = new Properties();
+                        FileInputStream filein = null;
+                        FileInputStream filein2 = null;
+
+                        //connect to the database
+                        try {
+
+                            dataSource.setURL((String)(schemaComboBox.getSelectedItem()));
+
+                            filein = new FileInputStream((String) schemaComboBox.getSelectedItem());
+                            properties.load(filein);
+                            dataSource = new MysqlDataSource();
+                            String usernameinFile = properties.getProperty("MYSQL_DB_USERNAME");
+                            String passwordinFile = properties.getProperty("MYSQL_DB_PASSWORD");
+                            String usernameFieldinput = usernameField.getText();
+                            String passwordFieldInput = passwordField.getText();
+
+                            if(usernameFieldinput.equals(usernameinFile) && passwordFieldInput.equals(passwordinFile)) {
+
+                                dataSource.setURL(properties.getProperty("MYSQL_DB_URL"));
+                                dataSource.setUser(properties.getProperty("MYSQL_DB_USERNAME"));
+                                dataSource.setPassword(properties.getProperty("MYSQL_DB_PASSWORD"));
+                                connection = dataSource.getConnection();
+                                connectionLabel.setText("jdbc:mysql://127.0.0.1:3306/project2?useTimezone=true&serverTimezone=UTC");
+                                tableModel.setConnection(connection);
+                            }
+                            else {
+                                connectionLabel.setText("Wrong username or password");
+                            }
                         } // end try
-                        catch ( SQLException sqlException )
-                        {
+                        catch (SQLException | IOException e) {
                             connectionLabel.setText("No connection");
-                            JOptionPane.showMessageDialog( null, sqlException.getMessage(), "Database connection error", JOptionPane.ERROR_MESSAGE );
-                        } // end catch
-                    } // end actionPerformed
-                }  // end ActionListener inner class
+                            JOptionPane.showMessageDialog(null, e.getMessage(), "Database connection error", JOptionPane.ERROR_MESSAGE);
+                        }// end catch
+                    }// end actionPerformed
+                } // end ActionListener inner class );
         ); // end call to addActionListener
 
-
         // create event listener for clearSqlButton
-        clearSqlButton.addActionListener(new ActionListener()
-                {
-                    public void actionPerformed( ActionEvent event )
-                    {
+        clearSqlButton.addActionListener(
+
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
                         queryArea.setText("");
                     } // end actionPerformed
-                }  // end ActionListener inner class
+                } // end ActionListener inner class
         ); // end call to addActionListener
 
         // create event listener for clearResultsButton
         clearResultsButton.addActionListener(
 
-                new ActionListener()
-                {
-                    public void actionPerformed( ActionEvent event )
-                    {
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
                         tableModel.clearData();
                     } // end actionPerformed
-                }  // end ActionListener inner class
+                } // end ActionListener inner class
         ); // end call to addActionListener
 
-        setSize(1000,600);
-        setVisible( true ); // display window
+        setSize(1000, 600);
+        setVisible(true); // display window
 
         // dispose of window when user quits application (this overrides
         // the default of HIDE_ON_CLOSE)
-        setDefaultCloseOperation( DISPOSE_ON_CLOSE );
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         // ensure database connection is closed when user quits application
         addWindowListener(
 
-                new WindowAdapter()
-                {
+                new WindowAdapter() {
                     // disconnect from database and exit when window has closed
-                    public void windowClosed( WindowEvent event )
-                    {
+                    public void windowClosed(WindowEvent event) {
                         tableModel.disconnectFromDatabase();
-                        System.exit( 0 );
+                        System.exit(0);
                     } // end method windowClosed
                 } // end WindowAdapter inner class
         ); // end call to addWindowListener
     } // end DisplayQueryResults constructor
 
     // execute application
-    public static void main( String args[] )
-    {
+    public static void main(String args[]) {
         new DisplayQueryResults();
     } // end main
-} // end class DisplayQueryResults
-
-
+}// end class DisplayQueryResults

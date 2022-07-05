@@ -1,23 +1,20 @@
+/*
+Name: Enrique Palma
+Course: CNT 4714 Summer 2022
+Assignment title: Project 2 – A Two-tier Client-Server Application
+Date: July 4, 2022
+Class: ResultSetTableModel
+*/
+
 // A TableModel that supplies ResultSet data to a JTable.
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
-import java.sql.DriverManager;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import javax.swing.table.AbstractTableModel;
-import java.util.Properties;
-import javax.sql.DataSource;
 
-
-// ResultSet rows and columns are counted from 1 and JTable
-// rows and columns are counted from 0. When processing
-// ResultSet rows or columns for use in a JTable, it is
-// necessary to add 1 to the row or column number to manipulate
-// the appropriate ResultSet column (i.e., JTable column 0 is
-// ResultSet column 1 and JTable row 0 is ResultSet row 1).
 public class ResultSetTableModel extends AbstractTableModel
 {
     private Connection connection;
@@ -130,7 +127,7 @@ public class ResultSetTableModel extends AbstractTableModel
         // obtain a value at specified ResultSet row and column
         try
         {
-            resultSet.next();  /* fixes a bug in MySQL/Java with date format */
+            resultSet.next();
             resultSet.absolute( row + 1 );
             return resultSet.getObject( column + 1 );
         } // end try
@@ -211,7 +208,5 @@ public class ResultSetTableModel extends AbstractTableModel
             connectedToDatabase = false;
         } // end finally
     } // end method disconnectFromDatabase
+
 }  // end class ResultSetTableModel
-
-
-
